@@ -7,3 +7,5 @@ and later i installed npm install @react-navigation/native-stack and npm install
 * presentation :modal new css styling
 * new property that going to check the current id contains values or not   const idval=route.params?.id  and converting the value into the boolean it is javascript method const val=!!valueid
 *using useLayout its making the animation very good (besically it synchronously render or came with the compoenent rendering but useEffect not like that)
+
+*date function getting used and also toString

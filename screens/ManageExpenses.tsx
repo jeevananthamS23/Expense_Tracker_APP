@@ -1,66 +1,92 @@
-import { useLayoutEffect } from "react";
-import { View,StyleSheet } from "react-native";
+import { useContext, useLayoutEffect } from "react";
+import { View, StyleSheet } from "react-native";
 import IconButton from "../components/UiParts/IconButton";
 import { GlobalStyles } from "../constant/style";
 import Button from "../components/UiParts/Button";
+import { ExpenseContext } from "../store/StoreContext";
 
+export default function ManageExpenses({ route, navigation }) {
+  const ExpenseCNTX = useContext(ExpenseContext);
 
+  const ExpenseID = route.params?.ExpenseId;
+  const IsEditing = !!ExpenseID;
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      title: IsEditing ? "Expense_Editing" : "Expenses_Adding",
+    });
+  }, [navigation, IsEditing]);
 
+  function deleteExpenseHandler() {
+    ExpenseCNTX.deleteExpenses(ExpenseID);
+    navigation.goBack();
+  }
 
-export default function ManageExpenses({route,navigation}){
-    const ExpenseID=route.params?.ExpenseId;
-    const IsEditing=!!ExpenseID;
-    useLayoutEffect(()=>{
-       navigation.setOptions({
-        title:IsEditing?"Expense_Editing":"Expenses_Adding"
-       })
-    },[navigation,IsEditing]);
+  function cancelhandler() {
+    navigation.goBack();
+  }
 
-
-    function deleteExpenseHandler(){
-        navigation.goBack();
+  function confirmedHandler() {
+    if (IsEditing) {
+      ExpenseCNTX.updateExpenses(ExpenseID, {
+        description: "Test111",
+        amount: 4785,
+        date: new Date(),
+      });
+    } else {
+      ExpenseCNTX.addExpenses({
+        description: "Test",
+        amount: 4785,
+        date: new Date(),
+      });
     }
+    navigation.goBack();
+  }
 
-    function cancelhandler(){
-          navigation.goBack();
-    }
+  return (
+    <View style={style.container}>
+      <View style={style.ButtonsContainer}>
+        <Button Style={style.ButtonStyle} mode={"flat"} onPress={cancelhandler}>
+          Cancel
+        </Button>
 
-    function confirmedHandler(){
-          navigation.goBack();
-    }
-
-    return(
-        <View style={style.container}>
-            <View style={style.ButtonsContainer}>
-                <Button Style={style.ButtonStyle} mode={"flat"} onPress={cancelhandler} >Cancel</Button>
-
-                <Button Style={style.ButtonsContainer} onPress={confirmedHandler} >{IsEditing?'update':'Add'}</Button>
-            </View>
-            <View style={style.deleteContainer}>           {IsEditing &&  <IconButton nameBtn={"trash"} color={GlobalStyles.colors.error500} size={36} onPress={deleteExpenseHandler}/>}
-</View>
-        </View>
-    )
+        <Button Style={style.ButtonStyle} onPress={confirmedHandler}>
+          {IsEditing ? "update" : "Add"}
+        </Button>
+      </View>
+      <View style={style.deleteContainer}>
+        {" "}
+        {IsEditing && (
+          <IconButton
+            nameBtn={"trash"}
+            color={GlobalStyles.colors.error500}
+            size={36}
+            onPress={deleteExpenseHandler}
+          />
+        )}
+      </View>
+    </View>
+  );
 }
-const style=StyleSheet.create({
-     container:{
-        flex:1,
-        padding:24,
-        backgroundColor:GlobalStyles.colors.primary800
-     },
-     ButtonsContainer:{
-        flexDirection:"row",
-        justifyContent:"center",
-        alignItems:"center"
-     },
-     ButtonStyle:{
-     minWidth:120,
-     marginHorizontal:8
-     },
-     deleteContainer:{
-        marginTop:16,
-        paddingTop:8,
-        borderTopWidth:2,
-        borderTopColor:GlobalStyles.colors.primary200,
-        alignItems:'center'
-     }
-})
+const style = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 24,
+    backgroundColor: GlobalStyles.colors.primary800,
+  },
+  ButtonsContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  ButtonStyle: {
+    minWidth: 120,
+    marginHorizontal: 8,
+  },
+  deleteContainer: {
+    marginTop: 16,
+    paddingTop: 8,
+    borderTopWidth: 2,
+    borderTopColor: GlobalStyles.colors.primary200,
+    alignItems: "center",
+  },
+});
