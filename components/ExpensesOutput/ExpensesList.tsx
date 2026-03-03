@@ -1,9 +1,14 @@
-
-import {FlatList ,Text,View} from "react-native";
+import {FlatList ,Text,View,ListRenderItem} from "react-native";
 import { ExpenseItem } from "./ExpensesItem";
-export default function ExpensesList({expenses}){
-    function renderItems(itemData){
-        return <ExpenseItem {...itemData.item}/>
-    }
+import { ExpensesObjectType } from "../../store/StoreContext";
+
+type ListProps={
+    expenses:ExpensesObjectType[]
+}
+export default function ExpensesList({expenses}:ListProps){
+     const renderItems: ListRenderItem<ExpensesObjectType> = ({ item }) => {
+    return <ExpenseItem {...item} />;
+  };
+
     return <FlatList data={expenses} renderItem={renderItems} keyExtractor={(item)=>item.id} />;
 }

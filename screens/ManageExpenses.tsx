@@ -2,13 +2,33 @@ import { useContext, useLayoutEffect } from "react";
 import { View, StyleSheet } from "react-native";
 import IconButton from "../components/UiParts/IconButton";
 import { GlobalStyles } from "../constant/style";
-import Button from "../components/UiParts/Button";
 import { ExpenseContext } from "../store/StoreContext";
+import { RootStackPramsList } from "../App";
+import { RouteProp } from "@react-navigation/native"; // from react native
+import { NativeStackNavigationProp } from "@react-navigation/native-stack"; // from the native stack
+import ExpensesForm from "../components/ManageExoensesComponents/ExpensesForm";
+import { ExpensesObjectType } from "../store/StoreContext";
 
-export default function ManageExpenses({ route, navigation }) {
+type ManageExpenseRouteProp = RouteProp<RootStackPramsList, "ManageExpense">; // route props
+type ManageExpenseNavigationProp = NativeStackNavigationProp<
+  RootStackPramsList,
+  "ManageExpense"
+>; // for navigation props
+
+type props = {
+  route: ManageExpenseRouteProp;
+  navigation: ManageExpenseNavigationProp; // defining both the route and navigation props
+};
+
+export default function ManageExpenses({ route, navigation }: props) {
   const ExpenseCNTX = useContext(ExpenseContext);
 
-  const ExpenseID = route.params?.ExpenseId;
+  const ExpenseID: string = route.params?.ExpenseId;
+
+  const DateForId = ExpenseCNTX.expenses.find(
+    (expenses) => expenses.id === ExpenseID,
+  );
+
   const IsEditing = !!ExpenseID;
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -25,36 +45,24 @@ export default function ManageExpenses({ route, navigation }) {
     navigation.goBack();
   }
 
-  function confirmedHandler() {
+  function confirmedHandler(ExpenseData: Omit<ExpensesObjectType, "id">) {
     if (IsEditing) {
-      ExpenseCNTX.updateExpenses(ExpenseID, {
-        description: "Test111",
-        amount: 4785,
-        date: new Date(),
-      });
+      ExpenseCNTX.updateExpenses(ExpenseID, ExpenseData);
     } else {
-      ExpenseCNTX.addExpenses({
-        description: "Test",
-        amount: 4785,
-        date: new Date(),
-      });
+      ExpenseCNTX.addExpenses(ExpenseData);
     }
     navigation.goBack();
   }
 
   return (
     <View style={style.container}>
-      <View style={style.ButtonsContainer}>
-        <Button Style={style.ButtonStyle} mode={"flat"} onPress={cancelhandler}>
-          Cancel
-        </Button>
-
-        <Button Style={style.ButtonStyle} onPress={confirmedHandler}>
-          {IsEditing ? "update" : "Add"}
-        </Button>
-      </View>
+      <ExpensesForm
+        Oncancel={cancelhandler}
+        IsEditing={IsEditing}
+        OnSubmit={confirmedHandler}
+        Data={DateForId}
+      />
       <View style={style.deleteContainer}>
-        {" "}
         {IsEditing && (
           <IconButton
             nameBtn={"trash"}
@@ -72,15 +80,6 @@ const style = StyleSheet.create({
     flex: 1,
     padding: 24,
     backgroundColor: GlobalStyles.colors.primary800,
-  },
-  ButtonsContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  ButtonStyle: {
-    minWidth: 120,
-    marginHorizontal: 8,
   },
   deleteContainer: {
     marginTop: 16,

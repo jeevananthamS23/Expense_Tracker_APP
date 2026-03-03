@@ -1,7 +1,32 @@
 import { createContext } from "react";
 import { useReducer } from "react";
 
-export const ExpenseContext = createContext({
+export type ExpensesObjectType = {
+  id: string;
+  description: string;
+  amount: number;
+  date: Date; // for object typing
+};
+
+type ExpensesContext = {
+  expenses: ExpensesObjectType[];
+  addExpenses: (expense: Omit<ExpensesObjectType, "id">) => void;
+  updateExpenses: (
+    id: string,
+    expenses: Omit<ExpensesObjectType, "id">,
+  ) => void; // for context typing
+  deleteExpenses: (id: string) => void;
+};
+
+type ActionReducer =
+  | { type: "add"; payload: Omit<ExpensesObjectType, "id"> }
+  | {
+      type: "update";
+      payload: { id: string; data: Omit<ExpensesObjectType, "id"> };
+    } // for action type and payload typing
+  | { type: "delete"; payload: string };
+
+export const ExpenseContext = createContext<ExpensesContext>({
   expenses: [],
   addExpenses: () => {},
   updateExpenses: () => {},
@@ -71,7 +96,7 @@ const Dummy_Expenses = [
   },
 ];
 
-function ExpenseReducer(state, action) {
+function ExpenseReducer(state: ExpensesObjectType[], action: ActionReducer) {
   switch (action.type) {
     case "add":
       const id = new Date().toString() + Math.random().toString();
@@ -80,8 +105,9 @@ function ExpenseReducer(state, action) {
       const ExpenseId = state.findIndex(
         (expense) => expense.id === action.payload.id,
       );
+      if (ExpenseId < 0) return state; // safety check
       const NeedForUpdate = state[ExpenseId];
-      const UpdatedExpense = { ...action.payload.data, ...NeedForUpdate };
+      const UpdatedExpense = { ...NeedForUpdate, ...action.payload.data };
       const EntireSate = [...state];
       EntireSate[ExpenseId] = UpdatedExpense;
       return EntireSate;
@@ -92,18 +118,25 @@ function ExpenseReducer(state, action) {
   }
 }
 
-export default function Contextprovider({ children }) {
+export default function Contextprovider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [ExpenseState, dispatch] = useReducer(ExpenseReducer, Dummy_Expenses);
 
-  function addExpenses(expenseData) {
+  function addExpenses(expenseData: Omit<ExpensesObjectType, "id">) {
     dispatch({ type: "add", payload: expenseData });
   }
 
-  function updateExpenses(id, expenseData) {
+  function updateExpenses(
+    id: string,
+    expenseData: Omit<ExpensesObjectType, "id">,
+  ) {
     dispatch({ type: "update", payload: { id: id, data: expenseData } });
   }
 
-  function deleteExpenses(id) {
+  function deleteExpenses(id: string) {
     dispatch({ type: "delete", payload: id });
   }
 

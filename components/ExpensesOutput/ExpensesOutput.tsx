@@ -2,9 +2,16 @@ import { View,StyleSheet,Text } from "react-native";
 import ExpensesSummary from "./ExpensesSummary";
 import ExpensesList from "./ExpensesList";
 import { GlobalStyles } from "../../constant/style";
+import { ExpensesObjectType } from "../../store/StoreContext";
 
 
-export default function ExpensesOutput({expenses,expensesPeriod,infoText}){
+type ExpensesOutPut={
+  expenses:ExpensesObjectType[],
+  expensesPeriod:string,
+  infoText:string
+}
+
+export default function ExpensesOutput({expenses,expensesPeriod,infoText}:ExpensesOutPut){
 
   let content=<Text style={style.infoText}>{infoText}</Text>;
   if(expenses.length>0){

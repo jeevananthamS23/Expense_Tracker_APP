@@ -1,7 +1,16 @@
 import {View,Text,StyleSheet} from "react-native";
 import { GlobalStyles } from "../../constant/style";
-export default function ExpensesSummary({expenses,expensesPeriodName}){
-  const expensesum=expenses.reduce((sum,expenses)=>{return sum+expenses.amount},0);
+import { ExpensesObjectType } from "../../store/StoreContext";
+
+type ExpensesSummaryType={
+    expenses:ExpensesObjectType[],
+    expensesPeriodName:string
+}
+
+
+
+export default function ExpensesSummary({expenses,expensesPeriodName}:ExpensesSummaryType){
+  const expensesum:number=expenses.reduce((sum,expenses)=>{return sum+expenses.amount},0);
     return(<View style={style.container}>
         <Text style={style.period}>
             {expensesPeriodName}

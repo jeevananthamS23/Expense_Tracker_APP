@@ -2,9 +2,20 @@ import { View,Text,StyleSheet, Pressable } from "react-native";
 import { GlobalStyles } from "../../constant/style";
 import DateFormater from "../../utils/DateFormater";
 import { useNavigation } from "@react-navigation/native";
+import { RootStackPramsList } from "../../App";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-export function ExpenseItem({id,description,date,amount}){
-    const navigation=useNavigation();
+type ManageExpenseScreenNavigationProp=NativeStackNavigationProp<RootStackPramsList,'ManageExpense'>; // navigation typescripting 
+
+type Props={
+    id:string,
+    description:string,   // props typescripting 
+    date:Date,
+    amount:number
+}
+
+export function ExpenseItem({id,description,date,amount}:Props){
+    const navigation=useNavigation<ManageExpenseScreenNavigationProp>();
  function ExpensesHandler(){
      navigation.navigate("ManageExpense",{
         ExpenseId:id

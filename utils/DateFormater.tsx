@@ -1,9 +1,9 @@
-export default function DateFormater(date) {
-  return `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
+export default function DateFormater(date: Date) {
+  return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
 }
 
-export function LastSevenDays(date, days) {
+export function LastSevenDays(date: Date, days: number) {
   const newDate = new Date(date);
-  newDate.setDate(date.getDate() - days);
+  newDate.setDate(newDate.getDate() - days);
   return newDate;
 }

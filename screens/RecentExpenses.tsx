@@ -1,9 +1,7 @@
-import { View,Text } from "react-native";
 import ExpensesOutput from "../components/ExpensesOutput/ExpensesOutput";
 import { ExpenseContext } from "../store/StoreContext";
 import { useContext } from "react";
 import { LastSevenDays } from "../utils/DateFormater";
-
 
 export default function RecentExpenses() {
   const ExpenseCNTX = useContext(ExpenseContext);
