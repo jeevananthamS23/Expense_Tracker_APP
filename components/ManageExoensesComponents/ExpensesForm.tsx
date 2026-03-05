@@ -33,12 +33,15 @@ export default function ExpensesForm({
     inputIdentifier: "amount" | "date" | "description",
     enteredValue: string,
   ) {
+  
+
     setValues((Current) => {
-      return {
-        ...Current,
-        [inputIdentifier]: { value: enteredValue, isValid: true },
-      };
-    });
+    const updated = { ...Current };
+    updated[inputIdentifier] = { value: enteredValue, isValid: true };
+    return updated;
+  });
+
+
   }
 
   // Handling the Submission
@@ -51,8 +54,7 @@ export default function ExpensesForm({
     };
 
     // valid the entered state
-    const AmountIsValid =
-      !isNaN(ExpensesData.amount) && ExpensesData.amount > 0;
+    const AmountIsValid =!isNaN(ExpensesData.amount) && ExpensesData.amount > 0;
     const DateIsValid = ExpensesData.date.toString() !== "Invalid Date";
     const DescriptionIsValid = ExpensesData.description.trim().length > 0;
 
@@ -89,7 +91,7 @@ export default function ExpensesForm({
           invalid={!EnteredValue.amount.isValid}
           TextInputprops={{
             keyboardType: "decimal-pad",
-            onChangeText: OnInputHandler.bind(this, "amount"),
+            onChangeText:(text) => OnInputHandler("amount", text),
             value: EnteredValue.amount.value,
           }}
         />
@@ -100,7 +102,7 @@ export default function ExpensesForm({
           TextInputprops={{
             placeholder: "YYYY-MM-DD",
             maxLength: 10,
-            onChangeText: OnInputHandler.bind(this, "date"),
+            onChangeText: (text) => OnInputHandler("date", text),
             value: EnteredValue.date.value,
           }}
         />
@@ -113,7 +115,7 @@ export default function ExpensesForm({
           multiline: true,
           /*autoCorrect:false*/
           /* autoCapitalize:false*/
-          onChangeText: OnInputHandler.bind(this, "description"),
+          onChangeText: (text) => OnInputHandler("description", text),
           value: EnteredValue.description.value,
         }}
       />

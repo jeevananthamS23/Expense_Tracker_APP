@@ -120,3 +120,7 @@ useReducer takes two arguments:
 
 
 * TypeScript guessed your style array must only contain styles shaped like the first one, so we use StyleProp<TextStyle> to tell it the array can contain any valid TextInput styles. (for TextStyle array)
+
+
+* In one line:
+children: React.ReactNode means your component can accept any renderable React content inside it.

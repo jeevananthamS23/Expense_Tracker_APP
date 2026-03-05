@@ -13,8 +13,7 @@ type ExpensesContext = {
   addExpenses: (expense: Omit<ExpensesObjectType, "id">) => void;
   updateExpenses: (
     id: string,
-    expenses: Omit<ExpensesObjectType, "id">,
-  ) => void; // for context typing
+    expenses: Omit<ExpensesObjectType, "id">,) => void; // for context typing
   deleteExpenses: (id: string) => void;
 };
 
@@ -96,6 +95,8 @@ const Dummy_Expenses = [
   },
 ];
 
+//returning new state if it update or add
+
 function ExpenseReducer(state: ExpensesObjectType[], action: ActionReducer) {
   switch (action.type) {
     case "add":
@@ -118,11 +119,7 @@ function ExpenseReducer(state: ExpensesObjectType[], action: ActionReducer) {
   }
 }
 
-export default function Contextprovider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function Contextprovider({children}: {  children: React.ReactNode;}) {
   const [ExpenseState, dispatch] = useReducer(ExpenseReducer, Dummy_Expenses);
 
   function addExpenses(expenseData: Omit<ExpensesObjectType, "id">) {
