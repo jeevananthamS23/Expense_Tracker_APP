@@ -8,6 +8,9 @@ import { RouteProp } from "@react-navigation/native"; // from react native
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"; // from the native stack
 import ExpensesForm from "../components/ManageExoensesComponents/ExpensesForm";
 import { ExpensesObjectType } from "../store/StoreContext";
+import { ExpenseCreation } from "../utils/http";
+
+
 
 type ManageExpenseRouteProp = RouteProp<RootStackPramsList, "ManageExpense">; // route props
 type ManageExpenseNavigationProp = NativeStackNavigationProp<
@@ -50,12 +53,14 @@ export default function ManageExpenses({ route, navigation }: props) {
       ExpenseCNTX.updateExpenses(ExpenseID, ExpenseData);
     } else {
       ExpenseCNTX.addExpenses(ExpenseData);
+      ExpenseCreation(ExpenseData);
     }
     navigation.goBack();
   }
 
   return (
     <View style={style.container}>
+
       <ExpensesForm
         Oncancel={cancelhandler}
         IsEditing={IsEditing}
