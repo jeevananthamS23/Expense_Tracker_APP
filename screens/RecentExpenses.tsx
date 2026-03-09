@@ -5,27 +5,21 @@ import { LastSevenDays } from "../utils/DateFormater";
 import { useEffect } from "react";
 import { ExpenseFetch } from "../utils/http";
 import { useFocusEffect } from "@react-navigation/native";
-import { useIsFocused } from '@react-navigation/native';
+
 
 
 export default function RecentExpenses() {
   // const ExpenseCNTX = useContext(ExpenseContext);
-    const isFocused = useIsFocused();
 
   const [FetchExpenses, setExpense] = useState([]);
 
-  useEffect(() => {
-    if(isFocused){
+  useFocusEffect(() => {
     async function Fetching() {
       const data = await ExpenseFetch();
       setExpense(data);
     }
     Fetching();
-  }
-  else{
-    console.log("getting un Focus");
-  }
-  },[isFocused]);
+  });
 
   const today = new Date();
   const lastSevenDaysDate = LastSevenDays(today, 7);
